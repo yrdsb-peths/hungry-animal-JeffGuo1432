@@ -15,7 +15,7 @@ public class Elephant extends Actor
     public int speed = 3;
     public void act()
     {
-        
+        MyWorld world = (MyWorld) getWorld();
         // Add your action code here.
         if(Greenfoot.isKeyDown("left"))
         {
@@ -26,6 +26,13 @@ public class Elephant extends Actor
             move(speed);
         }
         eat();
+        int deathSpinRadius=1;
+        if(world.gamePhase=="over"&&getY()<400){
+    
+            setRotation(getRotation()-25);
+            setLocation(getX()-8,getY()-6);
+            move(deathSpinRadius);
+        }
     }
     /**
      * Eats the apple and spawns a new apple if the apple is eaten
@@ -33,16 +40,29 @@ public class Elephant extends Actor
     public void eat()
     {
         MyWorld world = (MyWorld) getWorld();
-        
+        int goldenAppleChance = 20;
+        int goldenAppleDraw = Greenfoot.getRandomNumber(goldenAppleChance);
         if(isTouching(Apple.class))
         {
+            if(isTouching(GoldenApple.class))
+            {
+                world.summonAppleWave(50);
+            }
             removeTouching(Apple.class);
-            
+    
             world.applesCount-=1;
             world.increaseScore();
             if (world.gamePhase=="normal"){
-                world.createApple();
+                if((world.applesCount<=4)&&(goldenAppleDraw==0))
+                {
+                    world.createGoldenApple();
+                    goldenAppleChance--;
+                }
+                else{
+                    world.createApple();
+                }
             }               
+            System.out.println(world.applesCount);
         }
     }
 }

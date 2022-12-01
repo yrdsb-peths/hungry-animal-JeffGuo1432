@@ -32,6 +32,7 @@ public class Apple extends Actor
             }
         }
         
+        
     }
     
 }

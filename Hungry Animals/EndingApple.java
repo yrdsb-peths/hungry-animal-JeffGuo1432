@@ -19,18 +19,12 @@ public class EndingApple extends Apple
 
         setLocation(x,y);
         MyWorld world = (MyWorld) getWorld();
-        
-        if(getY()>=world.getHeight())
-        {
+    
+        if(waveEnd()){
             world.removeObject(this);
             world.applesCount-=1;
-            if (world.applesCount<=0)
-            {
-            world.gameOver();
-            }
-        }
-        if(waveEnd()){
             world.gamePhase="normal";
+            System.out.println("normal");
         }
     }
     public boolean waveEnd()

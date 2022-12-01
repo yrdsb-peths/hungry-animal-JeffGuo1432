@@ -24,11 +24,12 @@ public class MyWorld extends World
         super(600, 400, 1, false); 
         Elephant elephant = new Elephant();
         addObject(elephant, 300, 300);
-        summonAppleWave(100);
+        createGoldenApple();
+        //summonAppleWave(100);
     
         scoreLabel = new Label(0,60);
         addObject(scoreLabel, 50, 50);
-
+        
 
     }
     
@@ -37,8 +38,9 @@ public class MyWorld extends World
      */
     public void gameOver()
     {
-        Label gameOverLabel = new Label("Game over",100);
-        addObject(gameOverLabel,300,300);
+        Label gameOverLabel = new Label("✧*̥˚ game over *̥˚✧",80);
+        addObject(gameOverLabel,300,200);
+        gamePhase="over";
     }
     
     public void increaseScore()
@@ -55,14 +57,17 @@ public class MyWorld extends World
         int y = 0;
         addObject(apple, x, y);
     }
+    public void createGoldenApple(){
+        GoldenApple gApple = new GoldenApple();
+        applesCount++;
+        int x = Greenfoot.getRandomNumber(600);
+        int y = 0;
+        addObject(gApple,x,y);
+    }
     public void createApple(int count)
     {
         for(int i = 0 ; i < count-1 ; i++){
-            Apple apple = new Apple();
-            applesCount++;
-            int x = Greenfoot.getRandomNumber(600);
-            int y = 0;
-            addObject(apple, x, y);
+            createApple();
         }
     }
     public void createApple(int x,int y)
@@ -89,11 +94,6 @@ public class MyWorld extends World
         y = -15*count;
         createApple(x,y);
         addObject(endWave, x, y);
-        System.out.println(endWave.getY());
-        if (endWave.getY()>=0){
-            gamePhase="normal";
-            System.out.println("normal");
-        }
     }
     
 }
