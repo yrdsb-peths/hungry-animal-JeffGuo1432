@@ -15,7 +15,7 @@ public class EndingApple extends Apple
     public void act()
     {
         int x =getX();
-        int y= getY()+2;
+        int y= getY()+8;
 
         setLocation(x,y);
         MyWorld world = (MyWorld) getWorld();
@@ -24,7 +24,6 @@ public class EndingApple extends Apple
             world.removeObject(this);
             world.applesCount-=1;
             world.gamePhase="normal";
-            System.out.println("normal");
         }
     }
     public boolean waveEnd()

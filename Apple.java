@@ -17,8 +17,8 @@ public class Apple extends Actor
     {
         // Add your action code here.
         int x =getX();
-        int y= getY()+2;
-
+        int y= getY()+3;
+        
         setLocation(x,y);
         MyWorld world = (MyWorld) getWorld();
         
@@ -26,10 +26,7 @@ public class Apple extends Actor
         {
             world.removeObject(this);
             world.applesCount-=1;
-            if (world.applesCount<=0)
-            {
-            world.gameOver();
-            }
+            
         }
         
         
