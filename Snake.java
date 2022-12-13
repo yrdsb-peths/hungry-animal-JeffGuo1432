@@ -14,7 +14,7 @@ public class Snake extends Actor
      */
     private boolean alive=true;
     private int count;
-    private int speed=2;
+    private int speed=3;
     private boolean vulnerable;
     private Elephant elephant;
     private int yVelocity=Greenfoot.getRandomNumber(5)-9;
@@ -26,12 +26,13 @@ public class Snake extends Actor
     private double yDiff;
     private double pointAtElephantDoubleRad;
     private double pointAtElephantDoubleDeg;
+    private int appleTextTime;
     GreenfootImage image = new GreenfootImage("images/snake.png");
-    
-    
+    GreenfootSound goldenAppleSound = new GreenfootSound("sounds/goldenApple.wav");
+    GreenfootSound deathSound = new GreenfootSound("sounds/snakeDeath.mp3");
     public void act()
     {
-        setImage(image);
+        
         count++;
         if(alive){
             
@@ -50,19 +51,22 @@ public class Snake extends Actor
             }
             
             speed=(int)Math.round((100.0-Math.abs(pointAtElephantInt))/40.0);
-            move(speed+1);
+            
+            move(speed+3);
             setLocation(getX(),getY());
         }
         
         MyWorld world = (MyWorld) getWorld();
         if(alive){
             if (isTouching(Elephant.class)){
+                
                 if(alive){
-                    if(((Elephant)getWorld().getObjects(Elephant.class).get(0)).getRolling()==true)
+                    if(((Elephant)getWorld().getObjects(Elephant.class).get(0)).getKillMode()==true)
                     {
                         die();
                         xDirection=((Elephant)getWorld().getObjects(Elephant.class).get(0)).getDirection();
                         snakeDeadAtY=getY();
+                        deathSound.play();
                     }
                     else
                     {
@@ -91,14 +95,12 @@ public class Snake extends Actor
                 getWorld().removeObject(this);
             }
         }
-        if (count%30==0){
-            System.out.print(getAlive());
-        }
+        
     }
     public void die()
     {
         alive=false;
-        System.out.println("i am dead");
+        
     }
     
     public boolean getAlive()
@@ -110,12 +112,17 @@ public class Snake extends Actor
     {
         MyWorld world = (MyWorld) getWorld();
         
+        
         int goldenAppleDraw = Greenfoot.getRandomNumber(goldenAppleChance);
         if(isTouching(Apple.class))
         {
             if(isTouching(GoldenApple.class))
             {
                 world.summonAppleWave(50);
+                goldenAppleSound.play();
+        
+    
+                appleTextTime=count;
             }
             if(isTouching(SpeedApple.class))
             {

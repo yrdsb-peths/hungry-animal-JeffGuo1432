@@ -23,10 +23,21 @@ public class Elephant extends Actor
     int rollTicks=40;
     int speedCooldown=0;
     boolean bouncing=false;
+    public int appleTextTime;
+    int count;
+    private boolean bubbled=false;
+    GreenfootImage bubble = new GreenfootImage("images/elephantBubble.png");
+    GreenfootImage nobubble = new GreenfootImage("images/elephant.png");
+    GreenfootImage rollingImage = new GreenfootImage("images/rollingElephant.png");
+    GreenfootSound rollSound = new GreenfootSound("sounds/roll.wav");
     
+    GreenfootSound goldenAppleSound = new GreenfootSound("sounds/goldenApple.wav");
+    private int doneRolling;
+    private boolean killMode=false;
     
     public void act()
     {
+        count++;
         MyWorld world = (MyWorld) getWorld();
         Snake snake = new Snake();
         rollCharge=initRollCharge;
@@ -34,7 +45,13 @@ public class Elephant extends Actor
         speedCooldown-=1;
         setLocation(getX()+xVelocity,getY());
         MouseInfo mouse = Greenfoot.getMouseInfo();
-        
+        if(bubbled==true){
+            setImage(bubble);
+        }
+        else
+        {
+            setImage(nobubble);
+        }
         if(speedCooldown>=0){
             speed=8;
         }
@@ -72,12 +89,18 @@ public class Elephant extends Actor
         if(Greenfoot.isKeyDown("down")&(rollCooldown<=0))
         {
             rolling=true;
-            rollCooldown=100;
+            killMode=true;
+            rollCooldown=130;
+        }
+        if(rollCooldown==130){
+            rollSound.play();
         }
         if(rolling==true)
         {
+            setImage(rollingImage);
             rollTicks-=5;
             xVelocity=rollTicks*direction;
+            
             setRotation(getRotation()-45*direction);
             if(getX()<2||getX()>598){
                 direction=direction*-1;
@@ -91,8 +114,9 @@ public class Elephant extends Actor
             
             rollTicks=50;
             setRotation(0);
-            rolling=false;
+            doneRolling=count;
             rollCooldown=20;
+            rolling=false;
             if(bouncing==true){
                 direction=direction*-1;
                 bouncing=false;
@@ -104,15 +128,19 @@ public class Elephant extends Actor
                     setLocation(597,getY());
                 }
         }
+        if(doneRolling+30==count){
+            killMode=false;
+        }
         eat();
-        int deathSpinRadius=1;
+        
         if(world.gamePhase=="over"){
             
-            deathSpinRadius+=20;
-            setRotation(getRotation()-25);
-            setLocation(getX()-8,getY()-6);
-            move(deathSpinRadius);
+            setRotation(180);
+            setLocation(getX(),getY()+1);
         }
+    }
+    public boolean getKillMode(){
+        return killMode;
     }
     /**
      * Eats the apple and spawns a new apple if the apple is eaten
@@ -121,22 +149,34 @@ public class Elephant extends Actor
     public void eat()
     {
         MyWorld world = (MyWorld) getWorld();
-        
+        if(count==appleTextTime+50){
+            world.removeObject(world.appleWaveSummoned);
+        }
         int goldenAppleDraw = Greenfoot.getRandomNumber(goldenAppleChance);
+        if(isTouching(Bubble.class))
+        {
+            removeTouching(Bubble.class);
+            bubbled=true;
+        }
         if(isTouching(Apple.class))
         {
-            
             
             if(isTouching(GoldenApple.class))
             {
                 world.summonAppleWave(50);
+                goldenAppleSound.play();
+                world.appleWaveSummoned = new Label("apple wave summoned",30);
+                world.appleWaveSummoned.setLineColor(Color.YELLOW);
+                world.appleWaveSummoned.setFillColor(Color.YELLOW);
+                world.addObject(world.appleWaveSummoned, getX(), getY());
+                appleTextTime=count;
             }
             if(isTouching(SpeedApple.class))
             {
                 //speedCooldown=500;
             }
             removeTouching(Apple.class);
-    
+            
             world.applesCount-=1;
             world.increaseScore();
             if (world.gamePhase=="normal"){

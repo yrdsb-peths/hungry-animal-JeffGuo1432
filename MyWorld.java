@@ -17,6 +17,11 @@ public class MyWorld extends World
 
     int[] applesWaveY;
     public int clock=0;
+    public int snakeBossX;
+    public int snakeNum=0;
+    GreenfootSound gameOver = new GreenfootSound("sounds/gameOver.wav");
+    GreenfootSound snakeWaveSound = new GreenfootSound("sounds/snakeWave.wav");
+    GreenfootSound eatSound = new GreenfootSound("sounds/eat.mp3");
     /**
      * Constructor for objects of class MyWorld.
      * 
@@ -31,26 +36,26 @@ public class MyWorld extends World
         // createGoldenApple();
         //summonAppleWave(100);
         //createGoldenApple();
+        //createBubble();
         scoreLabel = new Label(0,60);
         addObject(scoreLabel, 50, 50);
     }
     public void act(){
         clock++;
-        int x = Greenfoot.getRandomNumber(600);
-        if((clock%600==0)&&(clock%2400!=0)){
-            createSnake(x-20,0);
+        if(clock%30==0){
+            createApple();
         }
-        if(clock%2400==0){
-            createSnake(Greenfoot.getRandomNumber(100)+500,0);
-            createSnake(Greenfoot.getRandomNumber(100),0);
+        if(clock%300==0){
+            snakeWave(2);
         }
-        if(clock%3600==0){
-            createSnake(x,0);
-            createSnake(x-100,0);
-            createSnake(x+100,0);
+        if(clock==1200){
+            snakeWaveSound.play();
         }
-        if(clock%80==0&gamePhase=="normal"){
-            createApple(x,0);
+        if((clock%30==0)&(clock>1200)&(clock<1500)){
+            snakeWave(snakeNum);
+        }
+        if((clock%30==0)&(clock>1200)&(clock<1500)){
+            snakeNum+=Greenfoot.getRandomNumber(3);
         }
     }
     /**
@@ -61,14 +66,24 @@ public class MyWorld extends World
         Label gameOverLabel = new Label("game over",80);
         addObject(gameOverLabel,300,200);
         gamePhase="over";
+        gameOver.play();
     }
-    
+
     public void increaseScore()
     {
         score++;
+        eatSound.play();
         scoreLabel.setValue(score);
     }
     
+    
+    public void createBubble()
+    {
+        Bubble bubble = new Bubble();
+        int x = Greenfoot.getRandomNumber(600);
+        int y = 0;
+        addObject(bubble, x, y);
+    }
     public void createApple()
     {
         Apple apple = new Apple();
@@ -106,6 +121,13 @@ public class MyWorld extends World
             createApple();
         }
     }
+    public void snakeWave(int count){
+        for(int i = 0 ; i < count ; i++){
+            int x = Greenfoot.getRandomNumber(600);
+            int y = Greenfoot.getRandomNumber(100)-100;
+            createSnake(x,y);
+        }
+    }
     public void createApple(int x,int y)
     {
         Apple apple = new Apple();
@@ -137,6 +159,4 @@ public class MyWorld extends World
         
         addObject(endWave, x, y);
     }
-    
-    
 }
