@@ -1,6 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
+ * i added a comment lol - Terry
  * Food for the elephant
  * 
  * @author Jeff 
