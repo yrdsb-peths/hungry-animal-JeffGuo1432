@@ -91,9 +91,6 @@ public class Snake extends Actor
                 getWorld().removeObject(this);
             }
         }
-        if (count%30==0){
-            System.out.print(getAlive());
-        }
     }
     public void die()
     {
